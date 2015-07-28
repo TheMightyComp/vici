@@ -1,0 +1,21 @@
+#Contains ending definitions for nouns
+#Many of these (e.g. neuter 5th declensions) can't exist.
+#The parser just needs it for the sake of simplicity
+#And completeness.
+#The definitions follow this order: MS NGDAAV FS NGDAAV NS NGDAAV then again for plurals
+
+DECLENSION 1
+-a ae ae am a a a ae ae am a a a ae ae am a a ae arum is as is ae ae arum is as is ae ae arum is as is ae 
+
+DECLENSION 2
+-us i o um o e us i o um o e um i o um o um i orum is os is i i orum is os is i a orum is a is a 
+
+DECLENSION 3
+-* is i em e * * is i em e * * is i * e * es um ibus es ibus es es um ibus es ibus es a um ibus a ibus a 
+
+DECLENSION 4
+-us us ui um u us us us ui um u us u us ui us u u  us uum ibus us ibus us us uum ibus us ibus us ua um ibus ua ibus ua 
+
+DECLENSION 5:
+-es ei ei em e es es ei ei em e es es ei ei em e es es erum ebus es ebus es es erum ebus es ebus es es erum ebus es ebus es 
+

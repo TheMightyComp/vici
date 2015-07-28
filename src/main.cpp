@@ -3,6 +3,7 @@
 int main()
 {
 		Undecliner u;
-		cout << u.undecline("canis") << "\n";
+		u.loadEndings();
+		cout << u.undecline("arboribus") << "\n";
 		return 0;
 }

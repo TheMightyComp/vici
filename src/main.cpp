@@ -4,6 +4,6 @@ int main()
 {
 	Undecliner u;
 	u.loadEndings();
-	cout << u.undecline("arboribus") << "\n";
+	cout << u.undecline("rerum") << "\n";
 	return 0;
 }

@@ -8,7 +8,55 @@ string Undecliner::undecline(string arg)
 	for	(int i = 0; i < NUMBER_OF_ENDINGS; i++)
 	{
 		if(endsWith(arg, nounEndings[i]))
-			std::cout << "Found matching ending: " << nounEndings[i] << endl;
+		{
+			string descriptor = "Declension " + std::to_string((i / 36) + 1) + " "; //Find the declension
+			descriptor += i % 36 > 17 ? "Plural " : "Singular "; //If it's more than halfway through its declension, it's plural
+			switch((i % 36) / 6)
+			{
+				case 0:
+				case 3:
+					descriptor += "Masculine ";
+					break;
+				case 1:
+				case 4:
+					descriptor += "Feminine ";
+					break;
+				case 2:
+				case 5:
+					descriptor += "Neuter ";
+					break;
+				default:
+					std::cout << "Something went horribly wrong with the noun parser.  You should probably see a doctor.\n";
+			}
+			descriptor += "noun in the ";
+
+			switch(i % 6) //Find the case
+			{
+				case 0:
+					descriptor += "nominative ";
+					break;
+				case 1:
+					descriptor += "genitive ";
+					break;
+				case 2:
+					descriptor += "dative ";
+					break;
+				case 3:
+					descriptor += "accusative ";
+					break;
+				case 4:
+					descriptor += "ablative ";
+					break;
+				case 5:
+					descriptor += "vocative ";
+					break;
+				default:
+					std::cout << "Something went horribly wrong with the noun parser.  You should probably see a doctor.\n";
+			}
+			descriptor += "case\n";
+
+			std::cout << "Found matching ending: " << nounEndings[i] << " for a " << descriptor; 
+		}
 	}
 	return arg;
 }

@@ -2,14 +2,16 @@
 
 using namespace std;
 
-string Undecliner::undecline(string arg)
+//Takes a given noun (in any case) and returns its nominative form
+void Undecliner::undecline(string arg)
 {
 	cout << "You asked me to undecline " << arg << "\n";
 	for	(int i = 0; i < NUMBER_OF_ENDINGS; i++)
 	{
 		if(endsWith(arg, nounEndings[i]))
 		{
-			string descriptor = "Declension " + std::to_string((i / 36) + 1) + " "; //Find the declension
+			int declension = (i / 36) + 1;
+			string descriptor = "Declension " + std::to_string(declension) + " "; //Find the declension
 			descriptor += i % 36 > 17 ? "Plural " : "Singular "; //If it's more than halfway through its declension, it's plural
 			switch((i % 36) / 6)
 			{
@@ -56,11 +58,21 @@ string Undecliner::undecline(string arg)
 			descriptor += "case\n";
 
 			std::cout << "Found matching ending: " << nounEndings[i] << " for a " << descriptor; 
+			
+			//Find possible matches from ending
+			string stem = "";
+			for(int j = 0; j < (int)arg.length() - (int)nounEndings[i].length(); j++) //Chop off the stem
+			{
+				stem += arg[j];
+			}
+
+			std::cout << "My best guess for this ending is the noun " << this->findNoun(stem, declension) << endl << endl;
 		}
 	}
-	return arg;
+	//return arg;
 }
 
+//Loads the known noun endings for all declensions from the file ./dict/N.dict
 void Undecliner::loadEndings()
 {
 	string curLine;
@@ -76,15 +88,15 @@ void Undecliner::loadEndings()
 				{
 					curLine.front() = ' ';//Get rid of the "-" in front
 					std::istringstream iss(curLine); //seperates the string by spaces
-						do
-						{
-							string sub;
-							iss >> sub;
-							//cout << "Substring: " << sub << endl;
-							if(!sub.empty())
-								nounEndings[i++]=sub; //Add each ending to the list
+					do
+					{
+						string sub;
+						iss >> sub;
+						//cout << "Substring: " << sub << endl;
+						if(!sub.empty())
+							nounEndings[i++]=sub; //Add each ending to the list
 
-						} while(iss);
+					} while(iss);
 				}
 		}
 		nounEndingsFile.close();
@@ -117,4 +129,90 @@ bool Undecliner::endsWith(string word, string ending)
 			++rEnding;
 	}
 	return true;
+}
+
+//Takes a stem and a declension, constructs a SPP, and finds the noun in the dictionary
+string Undecliner::findNoun(string st, int declension)
+{
+	ifstream dictFile("./dict/DICT.txt");
+	if(dictFile.is_open())
+	{
+		//std::cout << "Successfully opened file" << endl;
+		string curLine;
+
+		/*TODO: This search is HORRIBLE - it has to go through the whole dictionary alphabetically
+		 * Find a way to read a given line from the file, and do a binary search
+		 * Then it will be a billion times better */
+		while(std::getline(dictFile, curLine))
+		{
+			string stem = st; //the string is passed by reference, and we can't have that
+			if(curLine.front() == '#') //Confusingly, this is the line delimiter in the dictionary.  Don't blame me, I didn't make it.
+			{
+				curLine.front() = ' '; //Again, remove the hash because string stream doesn't like it
+				std::istringstream iss(curLine);
+				string w1, w2, w3; //We just have to look at the first three words - that gives us the FPP, SPP, and PoS
+				iss >> w1;
+				iss >> w2;
+				iss >> w3;
+				//cout << "w3 = " << w3 << endl;
+				if(w3.front() == 'N') //If it is a noun
+				{
+					switch(declension)
+					{
+						case 1:
+							stem += "ae";
+							break;
+						case 2:
+							stem += "i";
+							break;
+						case 3:
+							stem += "is";
+							break;
+						case 4:
+							stem += "us";
+							break;
+						case 5:
+							stem += "ei";
+							break;
+						default:
+							std::cout << "Something went horribly wrong: Declension " << declension << " does not exist!" << endl;
+
+					}	
+				}
+				else
+					continue;
+
+				//I don't know if there's a string::equals(), so I wrote my own.
+				std::string::iterator iS = stem.begin();
+				std::string::iterator dS = w2.begin();
+				bool foundMatch = true;
+				while(iS != stem.end() && dS != w2.end())
+				{
+					if(*iS != *dS)
+					{	
+						foundMatch = false;
+						break;
+					}	
+					++iS;
+					++dS;
+				}
+
+				if(foundMatch && iS == stem.end() && dS == w2.end()) //Last two conditionals ensure that stem is not a subset of w2 or vice versa
+				{
+					dictFile.close();
+					//cout << "Determined that stem -" << stem << "- is equal to 2PP -" << w2 << "-" << endl;
+					return w1;
+				}
+		    	/*else
+					cout << "Determined that stem -" << stem << "- is not equal to 2PP -" << w2 << "-" << endl; */
+
+			}
+		}	
+	}
+	else
+		std::cout << "Did not successfully open file." << endl;
+		
+
+	dictFile.close();
+	return "Did not find any matching nouns for " + st + "!";
 }

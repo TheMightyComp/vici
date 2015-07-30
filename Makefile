@@ -1,5 +1,5 @@
 
-undecline: ./build ./build/main.o ./build/undecline.o ./build/dict ./build/dict/N.dict
+undecline: ./build ./build/main.o ./build/undecline.o ./build/dict ./build/dict/N.dict ./build/dict/DICT.txt
 	g++ -std=c++11 ./build/main.o ./build/undecline.o -o ./build/undecline
 
 ./build/main.o: ./src/main.cpp
@@ -10,6 +10,9 @@ undecline: ./build ./build/main.o ./build/undecline.o ./build/dict ./build/dict/
 
 ./build/dict/N.dict: ./dict/N.dict
 	cp ./dict/N.dict ./build/dict/N.dict
+
+./build/dict/DICT.txt: ./dict/DICT.txt
+	cp ./dict/DICT.txt ./build/dict/DICT.txt
 
 ./build:
 	mkdir build

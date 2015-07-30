@@ -7,8 +7,9 @@ using namespace std;
 class Undecliner
 {
 	public:
-		string undecline(string);
+		void undecline(string);
 		void loadEndings();
+		string findNoun(string, int);
 
 	private:
 		const static int NUMBER_OF_ENDINGS = 180;
